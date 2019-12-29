@@ -1,19 +1,19 @@
 const port = 8080;
-const http = require("http");
-const httpStatus = require("http-status-codes");
-const fs = require("fs");
+const http = require('http');
+const httpStatus = require('http-status-codes');
+const fs = require('fs');
 
-const sendErrorResponse = response => {
+const sendErrorResponse = (response) => {
   response.writeHead(httpStatus.NOT_FOUND, {
-    "Content-Type": "text/html"
+    'Content-Type': 'text/html',
   });
-  response.write("<h1>File not found.</h1>");
+  response.write('<h1>File not found.</h1>');
   response.end();
 };
 
-const customReadFile = (file_path, response) => {
-  if (fs.existsSync(file_path)) {
-    fs.readFile(file_path, (error, data) => {
+const customReadFile = (filePath, response) => {
+  if (fs.existsSync(filePath)) {
+    fs.readFile(filePath, (error, data) => {
       if (error) {
         console.log(error);
         sendErrorResponse(response);
@@ -28,26 +28,26 @@ const customReadFile = (file_path, response) => {
 };
 
 http.createServer((request, response) => {
-  let url = request.url;
+  const { url } = request;
 
-  if (url.includes(".html")) {
+  if (url.includes('.html')) {
     response.writeHead(httpStatus.OK, {
-      "Content-Type": "text/html"
+      'Content-Type': 'text/html',
     });
     customReadFile(`./views${url}`, response);
-  } else if (url.includes(".js")) {
+  } else if (url.includes('.js')) {
     response.writeHead(httpStatus.OK, {
-      "Content-Type": "text/javascript"
+      'Content-Type': 'text/javascript',
     });
     customReadFile(`./public/js${url}`, response);
-  } else if (url.includes(".css")) {
+  } else if (url.includes('.css')) {
     response.writeHead(httpStatus.OK, {
-      "Content-Type": "text/css"
+      'Content-Type': 'text/css',
     });
     customReadFile(`./public/css${url}`, response);
-  } else if (url.includes(".png") ){
+  } else if (url.includes('.png')) {
     response.writeHead(httpStatus.OK, {
-      "Content-Type": "image/png"
+      'Content-Type': 'image/png',
     });
     customReadFile(`./public/images${url}`, response);
   } else {
