@@ -1,25 +1,27 @@
-const routeMap = {
-  '/': 'views/index.html',
-};
-
 const port = 8080;
 const http = require("http");
 const httpStatus = require("http-status-codes");
 const fs = require("fs");
 
-const app = http.createServer((request, response) => {
-  response.writeHead(httpStatus.OK, {
-    "Content-Type": "text/html"
-  });
+const getViewUrl = (url) => {
+  return `views${url}.html`;
+};
 
-  if (routeMap[request.url]) {
-    fs.readFile(routeMap[request.url], (error, data) => {
+const app = http.createServer((request, response) => {
+  let viewUrl = getViewUrl(request.url);
+
+  fs.readFile(viewUrl, (error, data) => {
+    if (error) {
+      response.writeHead(httpStatus.NOT_FOUND);
+      response.write("<h1>FILE NOT FOUND</h1>");
+    } else {
+      response.writeHead(httpStatus.OK, {
+        "Content-Type": "text/html"
+      });
       response.write(data);
-      response.end();
-    });
-  } else {
-    response.end('<h1>Sorry, not found.</h1>');
-  }
+    }
+    response.end();
+  });
 });
 
 app.listen(port);
