@@ -3,26 +3,56 @@ const http = require("http");
 const httpStatus = require("http-status-codes");
 const fs = require("fs");
 
-const getViewUrl = (url) => {
-  return `views${url}.html`;
+const sendErrorResponse = response => {
+  response.writeHead(httpStatus.NOT_FOUND, {
+    "Content-Type": "text/html"
+  });
+  response.write("<h1>File not found.</h1>");
+  response.end();
 };
 
-const app = http.createServer((request, response) => {
-  let viewUrl = getViewUrl(request.url);
-
-  fs.readFile(viewUrl, (error, data) => {
-    if (error) {
-      response.writeHead(httpStatus.NOT_FOUND);
-      response.write("<h1>FILE NOT FOUND</h1>");
-    } else {
-      response.writeHead(httpStatus.OK, {
-        "Content-Type": "text/html"
-      });
+const customReadFile = (file_path, response) => {
+  if (fs.existsSync(file_path)) {
+    fs.readFile(file_path, (error, data) => {
+      if (error) {
+        console.log(error);
+        sendErrorResponse(response);
+        return;
+      }
       response.write(data);
-    }
-    response.end();
-  });
-});
+      response.end();
+    });
+  } else {
+    sendErrorResponse(response);
+  }
+};
 
-app.listen(port);
+http.createServer((request, response) => {
+  let url = request.url;
+
+  if (url.includes(".html")) {
+    response.writeHead(httpStatus.OK, {
+      "Content-Type": "text/html"
+    });
+    customReadFile(`./views${url}`, response);
+  } else if (url.includes(".js")) {
+    response.writeHead(httpStatus.OK, {
+      "Content-Type": "text/javascript"
+    });
+    customReadFile(`./public/js${url}`, response);
+  } else if (url.includes(".css")) {
+    response.writeHead(httpStatus.OK, {
+      "Content-Type": "text/css"
+    });
+    customReadFile(`./public/css${url}`, response);
+  } else if (url.includes(".png") ){
+    response.writeHead(httpStatus.OK, {
+      "Content-Type": "image/png"
+    });
+    customReadFile(`./public/images${url}`, response);
+  } else {
+    sendErrorResponse(response);
+  }
+}).listen(port);
+
 console.log(`The server has started and is listing on port number: ${port}`);
