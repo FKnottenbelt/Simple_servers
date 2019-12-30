@@ -2,57 +2,36 @@ const port = 8080;
 const http = require('http');
 const httpStatus = require('http-status-codes');
 const fs = require('fs');
+const router = require('./router');
 
-const sendErrorResponse = (response) => {
-  response.writeHead(httpStatus.NOT_FOUND, {
-    'Content-Type': 'text/html',
+const plainTextContentType = { 'Content-Type': 'text/plain' };
+const htmlContentType = { 'Content-Type': 'text/html' };
+
+const customReadFile = (file, response) => {
+  fs.readFile(`./${file}`, (error, data) => {
+    if (error) {
+      console.log(`Error reading file: ${error}`);
+    }
+    response.end(data);
   });
-  response.write('<h1>File not found.</h1>');
-  response.end();
 };
 
-const customReadFile = (filePath, response) => {
-  if (fs.existsSync(filePath)) {
-    fs.readFile(filePath, (error, data) => {
-      if (error) {
-        console.log(error);
-        sendErrorResponse(response);
-        return;
-      }
-      response.write(data);
-      response.end();
-    });
-  } else {
-    sendErrorResponse(response);
-  }
-};
+router.get('/', (req, res) => {
+  res.writeHead(httpStatus.OK, plainTextContentType);
+  res.end('INDEX');
+});
 
-http.createServer((request, response) => {
-  const { url } = request;
+router.get('/index.html', (req, res) => {
+  res.writeHead(httpStatus.OK, htmlContentType);
+  customReadFile('views/index.html', res);
+});
 
-  if (url.includes('.html')) {
-    response.writeHead(httpStatus.OK, {
-      'Content-Type': 'text/html',
-    });
-    customReadFile(`./views${url}`, response);
-  } else if (url.includes('.js')) {
-    response.writeHead(httpStatus.OK, {
-      'Content-Type': 'text/javascript',
-    });
-    customReadFile(`./public/js${url}`, response);
-  } else if (url.includes('.css')) {
-    response.writeHead(httpStatus.OK, {
-      'Content-Type': 'text/css',
-    });
-    customReadFile(`./public/css${url}`, response);
-  } else if (url.includes('.png')) {
-    response.writeHead(httpStatus.OK, {
-      'Content-Type': 'image/png',
-    });
-    customReadFile(`./public/images${url}`, response);
-  } else {
-    sendErrorResponse(response);
-  }
-}).listen(port);
+router.post('/', (req, res) => {
+  res.writeHead(httpStatus.OK, plainTextContentType);
+  res.end('POSTED');
+});
+
+
+http.createServer(router.handle).listen(port);
 
 console.log(`The server has started and is listing on port number: ${port}`);
