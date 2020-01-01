@@ -1,2 +1,5 @@
+# Dependency directories
+node_modules/
 node_modules
 simple_server/node_modules
+serve_html/node_modules
