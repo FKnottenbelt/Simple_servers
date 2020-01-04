@@ -1,12 +1,10 @@
 const port = 8080;
 const express = require('express');
 const app = express();
+const homeController = require('./controllers/homeController');
 
 // middleware function
-app.use((req, res, next) => {
-  console.log(`request made to ${req.method}, ${req.url}`);
-  next();
-});
+app.use('/', homeController.logRequestPaths);
 
 app.use(
   express.urlencoded({
@@ -17,20 +15,13 @@ app.use(
 app.use(express.json());
 
 // routes
-app.get('/items/:vegetable', (req, res) => {
-  let veg = req.params.vegetable;
-  res.send(`This is the page for ${veg}`);
-});
+app.get('/items/:vegetable', homeController.sendReqParam);
 
-app.get('/', (req, res) => {
-  res.send(`Homepage`);
-});
+app.get('/', homeController.homePage);
 
-app.post('/', (req, res) => {
-  console.log('body: ', req.body);
-  console.log('query: ', req.query);
-  res.send("POST successful!");
-});
+
+app.post('/', homeController.postHome);
+
 
 // server
 app.listen(port, () => {
