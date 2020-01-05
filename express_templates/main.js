@@ -1,7 +1,8 @@
-const port = 8080;
-const express = require('express');
+const express = require("express");
 const app = express();
+app.set('port', process.env.PORT || 8080);
 const homeController = require('./controllers/homeController');
+app.set('view engine', 'ejs');
 
 // middleware function
 app.use('/', homeController.logRequestPaths);
@@ -15,20 +16,11 @@ app.use(
 app.use(express.json());
 
 // routes
-app.get('/items/:vegetable', homeController.sendReqParam);
+app.get('/name', homeController.respondWithName);
 
 app.get('/', homeController.homePage);
-
-
-app.post('/', homeController.postHome);
-
 
 // server
 app.listen(app.get('port'), () => {
   console.log(`Server running on port ${app.get('port')}`);
-});
-
-// server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
 });
