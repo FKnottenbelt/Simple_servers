@@ -6,6 +6,31 @@ const errorController = require('./controllers/errorController');
 app.set('view engine', 'ejs');
 const layouts = require('express-ejs-layouts');
 
+//database
+const mongoDb = require('mongodb').MongoClient;
+const dbUrl = 'mongodb://localhost:27017';
+const dbName = 'test';
+  // make connection
+mongoDb.connect(dbUrl, (error, client) => {
+  if (error) throw error;
+  let db = client.db(dbName);
+  db.collection("contacts")
+    .find()
+    .toArray((error, data) => {
+      if (error) throw error;
+      console.log(data);
+    });
+
+  db.collection('contacts')
+    .insert({
+      name: 'Klaas Vaak',
+      email: 'Klaas@example.com'
+    }, (error, db) => {
+      if (error) throw error;
+      console.log(db);
+    });
+});
+
 // middleware function
 app.use(express.static("public"));
 app.use(layouts);
