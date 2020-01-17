@@ -7,28 +7,14 @@ app.set('view engine', 'ejs');
 const layouts = require('express-ejs-layouts');
 
 //database
-const mongoDb = require('mongodb').MongoClient;
-const dbUrl = 'mongodb://localhost:27017';
-const dbName = 'test';
-  // make connection
-mongoDb.connect(dbUrl, (error, client) => {
-  if (error) throw error;
-  let db = client.db(dbName);
-  db.collection("contacts")
-    .find()
-    .toArray((error, data) => {
-      if (error) throw error;
-      console.log(data);
-    });
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/recipe_db',
+  {useNewUrlParser: true}
+);
+const db = mongoose.connection;
 
-  db.collection('contacts')
-    .insert({
-      name: 'Klaas Vaak',
-      email: 'Klaas@example.com'
-    }, (error, db) => {
-      if (error) throw error;
-      console.log(db);
-    });
+db.once('open', () => {
+  console.log('Successfully connected to MongDB using Mongoose');
 });
 
 // middleware function
