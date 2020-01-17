@@ -8,13 +8,14 @@ const layouts = require('express-ejs-layouts');
 
 //database
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/recipe_db',
+mongoose.createConnection('mongodb://localhost:27017/recipe_db',
   {useNewUrlParser: true}
 );
 const db = mongoose.connection;
 
 db.once('open', () => {
   console.log('Successfully connected to MongDB using Mongoose');
+//  console.log(db)
 });
 
 // middleware function
@@ -46,3 +47,27 @@ app.use(errorController.respondInternalError);
 app.listen(app.get('port'), () => {
   console.log(`Server running on port ${app.get('port')}`);
 });
+
+
+// add Mongoose schemas
+const subscriberSchema = mongoose.Schema({
+  name: String,
+  email: String,
+  zipCode: Number,
+});
+
+// add Mongsoose models
+const Subscriber = mongoose.model('Subscriber', subscriberSchema);
+
+// add models
+let subscriber1 = new Subscriber({
+  name: 'Klaas Vaak',
+  email: 'klaas@example.com',
+});
+
+subscriber1.save((error, savedDocument) => {
+  if (error) console.log(error);
+  console.log(savedDocument);
+});
+
+
