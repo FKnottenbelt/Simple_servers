@@ -62,7 +62,15 @@ let subscriber1 = new Subscriber({
   email: 'klaas3@example.com',
 });
 
-subscriber1.save((error, savedDocument) => {
-  if (error) console.log(error);
-  console.log(savedDocument);
+// subscriber1.save((error, savedDocument) => {
+//   if (error) console.log(error);
+//   console.log(savedDocument);
+// });
+
+const myQuery = Subscriber.findOne({
+  name: 'Klaas Vaak3'
+}).where('email', /klaas3/i);
+
+myQuery.exec((error, data) => {
+  if (data) console.log(data.email);
 });
