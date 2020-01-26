@@ -3,9 +3,11 @@ const app = express();
 app.set('port', process.env.PORT || 8080);
 
 // modules
+const Subscriber = require('./models/subscriber');
 const homeController = require('./controllers/homeController');
 const errorController = require('./controllers/errorController');
-const Subscriber = require('./models/subscriber');
+const subscribersController = require('./controllers/subscribersController');
+
 
 // template engine
 app.set('view engine', 'ejs');
@@ -43,6 +45,12 @@ app.use(express.json());
 app.get('/name/:myName', homeController.respondWithName);
 
 app.get('/', homeController.homePage);
+
+app.get('/subscribers', subscribersController.getAllSubscribers,
+  (req, res, next) => {
+    console.log(req.data);
+    res.send(req.data);
+  });
 
 // error handling
 app.use(errorController.logErrors);
