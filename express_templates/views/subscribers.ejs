@@ -1,4 +1,14 @@
-<% subscribers.forEach(subscriber => { %>
-  <p><%= subscriber.name %></p>
-  <p><%= subscriber.email %></p>
-<% }); %>
+<div class="list-container">
+  <% subscribers.forEach(subscriber => { %>
+  <div class="subscriber">
+    <p>
+      <span class="item-label">Name:</span>
+      <%= subscriber.name %>
+    </p>
+    <p>
+      <span class="item-label">Email:</span>
+      <%= subscriber.email %>
+    </p>
+  </div>
+  <% }); %>
+</div>
