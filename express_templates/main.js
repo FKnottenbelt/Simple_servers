@@ -49,7 +49,7 @@ app.get('/', homeController.homePage);
 app.get('/subscribers', subscribersController.getAllSubscribers,
   (req, res, next) => {
     console.log(req.data);
-    res.send(req.data);
+    res.render('subscribers', { subscribers: req.data });
   });
 
 // error handling
