@@ -26,6 +26,8 @@ db.once('open', () => {
   console.log('Successfully connected to MongDB using Mongoose');
 });
 
+mongoose.Promise = global.Promise; // use ES6 promises
+
 // middleware function
 app.use(express.static("public"));
 app.use(layouts);
