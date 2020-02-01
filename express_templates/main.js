@@ -46,6 +46,9 @@ app.get('/name/:myName', homeController.respondWithName);
 
 app.get('/', homeController.homePage);
 
+app.get('/contact', subscribersController.getSubscriptionPage);
+app.post('/contact', subscribersController.saveSubscriber);
+
 app.get('/subscribers', subscribersController.getAllSubscribers,
   (req, res, next) => {
     console.log(req.data);
