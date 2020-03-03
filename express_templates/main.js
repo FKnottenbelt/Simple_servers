@@ -70,10 +70,10 @@ app.listen(app.get('port'), () => {
 
 
 // add models (records)
-let subscriber1 = new Subscriber({
-  name: 'Klaas Vaak3',
-  email: 'klaas3@example.com',
-});
+// let subscriber1 = new Subscriber({
+//   name: 'Klaas Vaak3',
+//   email: 'klaas3@example.com',
+// });
 
 // subscriber1.save((error, savedDocument) => {
 //   if (error) console.log(error);
